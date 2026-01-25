@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthenticateUserRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -18,7 +19,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $credentials['email'])->first();
 
-        if (!$user || Hash::check($credentials['password'], $user->password)) {
+        if (!$user || !Hash::check($credentials['password'], $user->password)) {
             return ApiResponse::error(
                 'Invalid credentials',
                 Response::HTTP_UNAUTHORIZED
@@ -30,7 +31,7 @@ class AuthController extends Controller
         return ApiResponse::success(
             [
                 'token' => $token,
-                'user' => $user
+                'user' => new UserResource($user)
             ],
             'Login Successfull'
         );
