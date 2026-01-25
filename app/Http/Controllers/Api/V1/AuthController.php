@@ -39,13 +39,16 @@ class AuthController extends Controller
 
     public function me(Request $request)
     {
-        return $request->user();
+        return ApiResponse::success(new UserResource($request->user()));
     }
 
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
 
-        return [];
+        return ApiResponse::success(
+            null,
+            'Logout Successfully'
+        );
     }
 }
