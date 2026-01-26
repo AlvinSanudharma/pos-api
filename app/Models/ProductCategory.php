@@ -13,9 +13,10 @@ class ProductCategory extends Model
         'description'
     ];
 
-    public function scopeSearch($query, $search)
+    #[Scope]
+    protected function search($query, $search)
     {
-        return $query->when($search, function($query, $search) {
+        $query->when($search, function($query, $search) {
             $query->where('name', 'LIKE', "%{$search}%");
         });
     }
