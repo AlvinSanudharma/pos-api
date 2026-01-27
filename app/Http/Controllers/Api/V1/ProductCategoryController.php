@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Api\V1;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GetProductCategoriesRequest;
+use App\Http\Requests\StoreProductCategoryRequest;
 use App\Http\Resources\PaginatedResource;
 use App\Http\Resources\ProductCategoryResource;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ProductCategoryController extends Controller
 {
@@ -18,7 +20,7 @@ class ProductCategoryController extends Controller
     public function index(GetProductCategoriesRequest $request)
     {
         $categories = ProductCategory::search($request->search)
-                                        ->latest()
+                                        ->latest('id')
                                         ->paginate($request->limit ?? 10);
         
         return ApiResponse::success(new PaginatedResource($categories, ProductCategoryResource::class), 'Product Categories List');
@@ -27,9 +29,15 @@ class ProductCategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreProductCategoryRequest $request)
     {
-        //
+        $category = ProductCategory::create($request->validated());
+
+        return ApiResponse::success(
+            new ProductCategoryResource($category),
+            'Product Category Created Successfully',
+            Response::HTTP_CREATED
+        );
     }
 
     /**
