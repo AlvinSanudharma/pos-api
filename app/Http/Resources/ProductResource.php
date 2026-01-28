@@ -24,7 +24,7 @@ class ProductResource extends JsonResource
                                 : null;
                         }),
             'name' => $this->whenHas('name'),
-            'price' => $this->whenHas('price'),
+            'price' => (float)(string) $this->whenHas('price'),
             'stock' => $this->whenHas('stock'),
         ];
     }
