@@ -13,6 +13,7 @@ Route::prefix('v1')->group(function() {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::post('/product-categories/{id}/image', [ProductCategoryImageController::class, 'store']);
 
+        Route::get('product-categories/options', [ProductCategoryController::class, 'options']);
         Route::apiResource('product-categories', ProductCategoryController::class);
    });
 });

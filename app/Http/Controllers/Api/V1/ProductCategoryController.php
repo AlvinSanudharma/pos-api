@@ -42,6 +42,16 @@ class ProductCategoryController extends Controller
         );
     }
 
+    public function options(GetProductCategoriesRequest $request)
+    {
+        $categories = ProductCategory::select('id', 'name')
+                                        ->search($request->search)
+                                        ->orderBy('name')
+                                        ->get();
+        
+        return ApiResponse::success(ProductCategoryResource::collection($categories),'Product Categories List');
+    }
+
     /**
      * Display the specified resource.
      */
