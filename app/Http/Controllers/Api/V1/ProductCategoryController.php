@@ -45,7 +45,17 @@ class ProductCategoryController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $category = ProductCategory::find($id);
+
+        if (!$category) {
+            return ApiResponse::error('Product Category Not Found', Response::HTTP_NOT_FOUND);
+        }
+
+        return ApiResponse::success(
+            new ProductCategoryResource($category),
+            'Product Category Detail Successfully',
+            Response::HTTP_OK
+        );
     }
 
     /**
