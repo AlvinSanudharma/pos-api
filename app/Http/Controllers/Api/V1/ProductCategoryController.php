@@ -6,11 +6,13 @@ use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GetProductCategoriesRequest;
 use App\Http\Requests\StoreProductCategoryRequest;
+use App\Http\Requests\UpdateProductCategoryRequest;
 use App\Http\Resources\PaginatedResource;
 use App\Http\Resources\ProductCategoryResource;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 
 class ProductCategoryController extends Controller
 {
@@ -54,16 +56,26 @@ class ProductCategoryController extends Controller
         return ApiResponse::success(
             new ProductCategoryResource($category),
             'Product Category Detail Successfully',
-            Response::HTTP_OK
         );
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateProductCategoryRequest $request, string $id)
     {
-        //
+        $category = ProductCategory::find($id);
+
+        if (!$category) {
+            return ApiResponse::error('Product Category Not Found', Response::HTTP_NOT_FOUND);
+        }
+
+        $category->update($request->validated());
+
+        return ApiResponse::success(
+            new ProductCategoryResource($category),
+            'Product Category Update Successfully',
+        );
     }
 
     /**
@@ -71,6 +83,21 @@ class ProductCategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $category = ProductCategory::find($id);
+
+        if (!$category) {
+            return ApiResponse::error('Product Category Not Found', Response::HTTP_NOT_FOUND);
+        }
+
+        if ($category->image) {
+            Storage::disk('public')->delete($category->image);
+        }
+
+        $category->delete();
+
+        return ApiResponse::success(
+            null,
+            'Product Category Deleted Successfully',
+        );
     }
 }
