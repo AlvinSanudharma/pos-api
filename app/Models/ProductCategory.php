@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProductCategory extends Model
 {
@@ -13,10 +14,15 @@ class ProductCategory extends Model
         'description'
     ];
 
-    #[Scope]
-    protected function search($query, $search)
+    public function products(): HasMany
     {
-        $query->when($search, function($query, $search) {
+        return $this->hasMany(Product::class);
+    }
+
+    #[Scope]
+    protected function search($query, $search): void
+    {
+        $query->when($search, function ($query, $search) {
             $query->where('name', 'LIKE', "%{$search}%");
         });
     }
