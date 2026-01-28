@@ -18,10 +18,14 @@ class ProductResource extends JsonResource
         return [
             'id' => $this->id,
             'category' => new ProductCategoryResource($this->whenLoaded('category')),
-            'image' => $this->image ? asset(Storage::url($this->image)) : null,
-            'name' => $this->name,
-            'price' => $this->price,
-            'stock' => $this->stock,
+            'image' => $this->whenHas('image', function () {
+                            return $this->image
+                                ? asset(Storage::url($this->image))
+                                : null;
+                        }),
+            'name' => $this->whenHas('name'),
+            'price' => $this->whenHas('price'),
+            'stock' => $this->whenHas('stock'),
         ];
     }
 }
