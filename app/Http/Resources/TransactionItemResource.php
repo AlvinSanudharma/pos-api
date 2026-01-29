@@ -18,9 +18,9 @@ class TransactionItemResource extends JsonResource
             'id' => $this->id,
             'product_id' => $this->product_id,
             'product_name' => $this->product->name,
-            'price' => $this->price,
+            'price' => (float) (string) $this->price,
             'quantity' => $this->quantity,
-            'subtotal' => $this->subtotal,
+            'subtotal' => (float) (string) $this->subtotal,
         ];
     }
 }
