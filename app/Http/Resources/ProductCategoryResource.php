@@ -17,9 +17,13 @@ class ProductCategoryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'image' => $this->image ? asset(Storage::url($this->image)) : null,
+            'image' => $this->whenHas('image', function () {
+                            return $this->image
+                                ? asset(Storage::url($this->image))
+                                : null;
+                        }),
             'name' => $this->name,
-            'description' => $this->description,
+            'description' => $this->whenHas('description'),
         ];
     }
 }
